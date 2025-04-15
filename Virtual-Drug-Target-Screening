@@ -1,0 +1,59 @@
+# Virtual-Drug-Target-Screening
+A bioinformatics-based tool for drug target screening using Python and Streamlit.
+git config --global user.name "Ghyar atharv dnyaneshwar"
+git config --global user.email "atharvghyar09@gmail.com"
+
+Drug Name,Target Name,Binding Affinity (nM),Approval Status
+Aspirin,COX-1,50,Approved
+Paracetamol,COX-2,100,Approved
+Remdesivir,RdRp,30,Approved
+Molnupiravir,RdRp,45,Approved
+
+streamlit
+pandas
+matplotlib
+seaborn
+
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Load the dataset
+df = pd.read_csv("bindingdb_sample.csv")
+
+# Streamlit App
+st.set_page_config(page_title="Virtual Drug Target Screening Tool", page_icon="🧪")
+
+st.title("🧪 Virtual Drug Target Screening Tool")
+st.write("Search for drugs interacting with your target protein based on binding affinity and approval status.")
+
+# Input section
+target_name = st.text_input("🔍 Enter Target Protein Name")
+
+if target_name:
+    # Filter dataset for the target
+    filtered_df = df[df['Target Name'].str.contains(target_name, case=False)]
+    
+    if not filtered_df.empty:
+        st.success(f"✅ Found {len(filtered_df)} drugs interacting with **{target_name.upper()}**")
+        st.dataframe(filtered_df[['Drug Name', 'Binding Affinity (nM)', 'Approval Status']])
+
+        # Optional: Bar plot
+        st.subheader("📊 Binding Affinities")
+        plt.figure(figsize=(8, 4))
+        sns.barplot(x='Binding Affinity (nM)', y='Drug Name', data=filtered_df, palette='viridis')
+        plt.xlabel("Binding Affinity (nM) ↓")
+        plt.ylabel("Drug Name")
+        plt.title(f"Binding Affinities for {target_name.upper()}")
+        st.pyplot(plt)
+    
+    else:
+        st.warning("⚠️ No results found for the entered target. Please check the name or try a different one.")
+
+# Footer
+st.markdown("---")
+st.markdown("Built with ❤️ by **Atharv Dnyaneshwar Ghyar**")
+
+
+
